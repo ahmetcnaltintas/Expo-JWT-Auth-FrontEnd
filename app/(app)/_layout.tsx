@@ -7,8 +7,8 @@ export default function AppLayout() {
       <Drawer.Screen
         name="(tabs)"
         options={{
-          drawerLabel: "Ana Menü",
-          title: "Ana Menü"
+          drawerLabel: "Ana Sayfa",
+          title: "TodoApp"
         }}
       />
       <Drawer.Screen
