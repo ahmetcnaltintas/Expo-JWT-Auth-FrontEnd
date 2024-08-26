@@ -8,14 +8,16 @@ export default function AppLayout() {
         name="(tabs)"
         options={{
           drawerLabel: "Ana Sayfa",
-          title: "TodoApp"
+          title: "TodoApp",
+          headerShown: false  // Drawer içindeki header'ı gizle
         }}
       />
       <Drawer.Screen
         name="settings"
         options={{
           drawerLabel: "Ayarlar",
-          title: "Ayarlar"
+          title: "Ayarlar",
+          headerShown: false  // Drawer içindeki header'ı gizle
         }}
       />
     </Drawer>
