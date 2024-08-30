@@ -2,50 +2,53 @@ import React from 'react';
 import { Image, StyleSheet, View, ScrollView } from 'react-native';
 import { Text } from '~/components/ui/text';
 import { useAuth } from '~/context/AuthContext';
+import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from '@expo/vector-icons/Ionicons';
-
 
 const Profile = () => {
   const { user } = useAuth();
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.profileContainer}>
-        <Image source={require('../../../assets/images/react-logo.png')} style={styles.profileImage} />
-        <View style={styles.userInfo}>
-          <Text style={styles.name}>{user?.name}</Text>
-          <Text style={styles.email}>{user?.email}</Text>
+      <LinearGradient
+        colors={['#4c669f', '#3b5998', '#192f6a']}
+        style={styles.headerGradient}
+      >
+        <View style={styles.profileContainer}>
+          <Image source={require('../../../assets/images/react-logo.png')} style={styles.profileImage} />
+          <View style={styles.userInfo}>
+            <Text style={styles.name}>{user?.name}</Text>
+            <Text style={styles.email}>{user?.email}</Text>
+          </View>
         </View>
-      </View>
+      </LinearGradient>
 
       <View style={styles.statsContainer}>
-        <View style={styles.statItem}>
-          <Text style={styles.statNumber}>10</Text>
-          <Text style={styles.statLabel}>Tamamlanmış Görevler</Text>
-        </View>
-        <View style={styles.statItem}>
-          <Text style={styles.statNumber}>5</Text>
-          <Text style={styles.statLabel}>Tamamlanmış Görevler</Text>
-        </View>
-        <View style={styles.statItem}>
-          <Text style={styles.statNumber}>25</Text>
-          <Text style={styles.statLabel}>Tüm Görevler</Text>
-        </View>
+        {[
+          { number: '10', label: 'Tamamlanmış' },
+          { number: '5', label: 'Devam Eden' },
+          { number: '25', label: 'Tüm Görevler' },
+        ].map((stat, index) => (
+          <View key={index} style={styles.statItem}>
+            <Text style={styles.statNumber}>{stat.number}</Text>
+            <Text style={styles.statLabel}>{stat.label}</Text>
+          </View>
+        ))}
       </View>
 
       <View style={styles.infoSection}>
-        <View style={styles.infoItem}>
-          <Ionicons name="school" size={24} color="#4A4A4A" style={styles.infoIcon} />
-          <Text style={styles.infoText}>Bilgisayar Programcılığı</Text>
-        </View>
-        <View style={styles.infoItem}>
-          <Ionicons name="location" size={24} color="#4A4A4A" style={styles.infoIcon} />
-          <Text style={styles.infoText}>Bursa, Türkiye</Text>
-        </View>
-        <View style={styles.infoItem}>
-          <Ionicons name="code-working" size={24} color="#4A4A4A" style={styles.infoIcon} />
-          <Text style={styles.infoText}>Yazılım Geliştirici</Text>
-        </View>
+        {[
+          { icon: 'school', text: 'Bilgisayar Programcılığı' },
+          { icon: 'location', text: 'Bursa, Türkiye' },
+          { icon: 'code-working', text: 'Yazılım Geliştirici' },
+        ].map((item, index) => (
+          <View key={index} style={styles.infoItem}>
+            <View style={styles.iconContainer}>
+              <Ionicons name={item.icon} size={24} color="#fff" />
+            </View>
+            <Text style={styles.infoText}>{item.text}</Text>
+          </View>
+        ))}
       </View>
     </ScrollView>
   );
@@ -56,11 +59,14 @@ export default Profile;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#f0f2f5',
+  },
+  headerGradient: {
+    paddingTop: 60,
+    paddingBottom: 30,
   },
   profileContainer: {
     alignItems: 'center',
-    marginTop: 60,
   },
   profileImage: {
     width: 120,
@@ -71,45 +77,42 @@ const styles = StyleSheet.create({
   },
   userInfo: {
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 15,
   },
   name: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#fff',
   },
   email: {
     fontSize: 16,
-    color: '#666',
+    color: '#e0e0e0',
     marginTop: 5,
   },
   statsContainer: {
-    flexDirection: 'column-reverse',
+    flexDirection: 'row',
     justifyContent: 'space-around',
-    marginTop: 20,
-    paddingVertical: 20,
-    backgroundColor: '#fff',
-    borderRadius: 10,
+    marginTop: -30,
     marginHorizontal: 20,
+    padding: 15,
+    backgroundColor: '#fff',
+    borderRadius: 15,
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
     elevation: 5,
   },
   statItem: {
     alignItems: 'center',
   },
   statNumber: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#4c669f',
   },
   statLabel: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#666',
     marginTop: 5,
   },
@@ -120,13 +123,19 @@ const styles = StyleSheet.create({
   infoItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 20,
   },
-  infoIcon: {
+  iconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#4c669f',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginRight: 15,
   },
   infoText: {
     fontSize: 16,
-    color: '#4A4A4A',
+    color: '#333',
   },
 });
