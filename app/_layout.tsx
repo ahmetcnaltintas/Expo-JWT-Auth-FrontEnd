@@ -18,12 +18,9 @@ export default function RootLayout() {
         }}
       >
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen 
-          name="(app)" 
-          options={() => ({ 
-            header: () => <CustomHeader />,
-          })} 
-        />
+        <Stack.Screen name="(app)" options={{ 
+          headerTitle: '',
+         }}/>
         <Stack.Screen 
           name="taskDetail/[id]" 
           options={({ navigation }) => ({ 
@@ -33,6 +30,8 @@ export default function RootLayout() {
                 <Ionicons name="arrow-back" size={24} color="black" />
               </TouchableOpacity>
             ),
+            headerTransparent: false, // Detay sayfasında şeffaf header istemiyorsanız
+            contentStyle: { paddingTop: 0 }, // Detay sayfasında ekstra padding'e gerek yok
           })}  
         />
       </Stack>

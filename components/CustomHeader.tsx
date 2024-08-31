@@ -9,17 +9,15 @@ export default function CustomHeader() {
   const navigation = useNavigation();
 
   return (
-    <View style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
+      <BlurView intensity={80} tint="light" style={styles.blurContainer}>
         <View style={styles.header}>
-          <BlurView intensity={180} tint="light" style={styles.menuButtonContainer}>
-            <TouchableOpacity
-              style={styles.menuButton}
-              onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-            >
-              <Ionicons name="menu" size={24} color="black" />
-            </TouchableOpacity>
-          </BlurView>
+          <TouchableOpacity
+            style={styles.menuButton}
+            onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+          >
+            <Ionicons name="menu" size={24} color="black" />
+          </TouchableOpacity>
           <TouchableOpacity style={styles.profileButton}>
             <Image
               source={require('../assets/images/react-logo.png')}
@@ -27,41 +25,32 @@ export default function CustomHeader() {
             />
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
-    </View>
+      </BlurView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     zIndex: 100,
   },
-  safeArea: {
-    backgroundColor: 'transparent',
+  blurContainer: {
+    width: '100%',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: 60,
     paddingHorizontal: 20,
-    paddingTop: Constants.statusBarHeight,
-  },
-  menuButtonContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    overflow: 'hidden',
+    height: 60,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   menuButton: {
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    padding: 8,
   },
   profileButton: {
     width: 40,

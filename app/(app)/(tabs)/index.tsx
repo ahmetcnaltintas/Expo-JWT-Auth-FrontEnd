@@ -1,138 +1,142 @@
-import axios from 'axios';
-import React, { useState, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { StyleSheet, View, FlatList, Text, TouchableOpacity } from 'react-native';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native';
+import React from 'react';
+import { StyleSheet, View, ScrollView, FlatList, Image } from 'react-native';
+import { Text } from '~/components/ui/text';
+import { LinearGradient } from 'expo-linear-gradient';
+import { DrawerActions, useNavigation } from '@react-navigation/native';
+import { Dimensions } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Ionicons } from '@expo/vector-icons';
+import Carousel from 'react-native-snap-carousel';
 
-export default function IndexPage() {
-  const [tasks, setTasks] = useState([]);
 
-  const router = useRouter();
-  
-  const handlePress = (task) => {
-    router.push({
-      pathname: `/taskDetail/${task.id}` as any,
-      params: { 
-        title: task.title,
-        description: task.description,
-      },
-    });
-  };
+const { width: screenWidth } = Dimensions.get('window');
 
-  useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const token = await AsyncStorage.getItem('token');
-        if (!token) {
-          throw new Error('Token bulunamadı');
-        }
+const HomePage = () => {
+  const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
 
-        const response = await axios.get('http://127.0.0.1:8000/api/tasks', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-
-        if (response.status === 200) {
-          setTasks(response.data);
-        } else {
-          console.log('Görevler alınırken bir hata oluştu:', response.data);
-        }
-      } catch (error) {
-        console.error('API isteği sırasında bir hata oluştu:', error.response ? error.response.data : error.message);
-      }
-    };
-
-    fetchTasks();
-  }, []);
-
-  const toggleTodo = async (id) => {
-    
-  };
-
- 
-  const renderTodoItem = ({ item }) => (
-    <TouchableOpacity 
-      style={styles.todoItem}
-      onPress={() => handlePress(item)}
-    >
-      <MaterialIcons
-        name={item.is_read === 1 ? 'check-box' : 'check-box-outline-blank'}
-        size={24}
-        color={item.is_read === 1 ? '#4CAF50' : '#757575'}
-        onPress={() => toggleTodo(item.id)}
-      />
-      <Text style={[styles.todoText, item.completed && styles.completedTodoText]}>
-        {item.title}
-      </Text>
-    </TouchableOpacity>
-  );
-  
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Görevler</Text>
-      <FlatList
-        data={tasks}
-        renderItem={renderTodoItem}
-        keyExtractor={(item) => item.id.toString()} 
-        style={styles.todoList}
-      />
-      <TouchableOpacity 
-        style={styles.addButton}
-        onPress={() => router.push('/tasks')}
-      >
-        <MaterialIcons name="add" size={30} color="#FFFFFF" />
-      </TouchableOpacity>
+      {/* Şeffaf Header */}
+      <View style={[styles.header, { paddingTop: insets.top }]}>
+        <TouchableOpacity
+          onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+          style={styles.menuButton}
+        >
+          <Ionicons name="menu" size={30} color="black" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.profileButton}>
+          <Image
+            source={require('../../../assets/images/react-logo.png')}
+            style={styles.profilePicture}
+          />
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView style={styles.scrollView}>
+        <LinearGradient
+          colors={['#4c669f', '#3b5998', '#192f6a']}
+          style={styles.headerGradient}
+        >
+          <Text style={styles.headerTitle}>Günlük Özet</Text>
+        </LinearGradient>
+
+        <View style={styles.productsSection}>
+          <Text style={styles.sectionTitle}>Eğitmen Ürünleri</Text>
+          <View style={styles.productCardPlaceholder}>
+            <Text>Eğitmen ürün kartları buraya eklenecek</Text>
+          </View>
+        </View>
+      </ScrollView>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#f0f2f5',
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#333',
+  menuButton: {
+    padding: 5,
   },
-  todoList: {
+  profileButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  profilePicture: {
+    width: '100%',
+    height: '100%',
+  },
+  scrollView: {
     flex: 1,
   },
-  todoItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    padding: 15,
-    borderRadius: 8,
-    marginBottom: 10,
-    elevation: 2,
-  },
-  todoText: {
-    marginLeft: 10,
-    fontSize: 16,
-    color: '#333',
-  },
-  completedTodoText: {
-    textDecorationLine: 'line-through',
-    color: '#757575',
-  },
-  addButton: {
+  header: {
     position: 'absolute',
-    right: 20,
-    bottom: 99,
-    backgroundColor: '#2196F3',
-    width: 60,
+    top: 0,
+    left: 0,
+    right: 0,
     height: 60,
-    borderRadius: 30,
-    justifyContent: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    elevation: 5,
+    paddingHorizontal: 15,
+    zIndex: 1000,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)', // Şeffaf arka plan
+  },
+  headerGradient: {
+    paddingTop: 80, // Header'a yer açmak için
+    paddingBottom: 30,
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  dailyInfoList: {
+    paddingHorizontal: 10,
+  },
+  dailyInfoItem: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+    marginHorizontal: 10,
+    width: screenWidth - 80,
+  },
+  dailyInfoTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 10,
+  },
+  dailyInfoValue: {
+    fontSize: 24,
+    color: '#fff',
+  },
+  productsSection: {
+    padding: 20,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 15,
+  },
+  productCardPlaceholder: {
+    backgroundColor: '#e0e0e0',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 200,
   },
 });
+
+export default HomePage;

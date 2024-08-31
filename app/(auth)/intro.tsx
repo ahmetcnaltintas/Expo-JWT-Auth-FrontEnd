@@ -1,28 +1,27 @@
-import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Dimensions, Image } from 'react-native';
+import { router } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const sliderData = [
   {
     image: require('../../assets/images/image1.png'),
     text: 'Hoş geldiniz! Uygulamamızı keşfedin.',
-    buttonText: 'İleri',
   },
   {
-    image: require('../../assets/images/image2.png'),
+    image: require('../../assets/images/image1.png'),
     text: 'Hızlı ve kolay kullanım.',
-    buttonText: 'İleri',
   },
   {
-    image: require('../../assets/images/image3.png'),
+    image: require('../../assets/images/image1.png'),
     text: 'Hemen başlayın!',
-    buttonText: 'Giriş Yap',
   },
 ];
 
-const Intro = ({ navigation }) => {
+const Intro = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const handleNext = () => {
@@ -35,45 +34,77 @@ const Intro = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Image source={sliderData[currentSlide].image} style={styles.image} />
-      <Text style={styles.text}>{sliderData[currentSlide].text}</Text>
-      <TouchableOpacity style={styles.button} onPress={handleNext}>
-        <Text style={styles.buttonText}>{sliderData[currentSlide].buttonText}</Text>
-      </TouchableOpacity>
+      <StatusBar translucent backgroundColor="transparent" />
+      {sliderData.map((slide, index) => (
+        currentSlide === index && (
+          <Animated.View 
+            key={index} 
+            style={StyleSheet.absoluteFillObject}
+            entering={FadeIn}
+            exiting={FadeOut}
+          >
+            <Image source={slide.image} style={styles.backgroundImage} />
+          </Animated.View>
+        )
+      ))}
+      <View style={styles.overlay}>
+        <View style={styles.contentContainer}>
+          <Animated.Text 
+            style={styles.text}
+            entering={FadeIn}
+            exiting={FadeOut}
+          >
+            {sliderData[currentSlide].text}
+          </Animated.Text>
+          <TouchableOpacity style={styles.button} onPress={handleNext}>
+            <Text style={styles.buttonText}>
+              {currentSlide === sliderData.length - 1 ? 'Başla' : 'İleri'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
 };
 
-export default Intro;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: 'black',
   },
-  image: {
-    width: width * 0.8,
-    height: width * 0.8,
-    resizeMode: 'contain',
-    marginBottom: 30,
+  backgroundImage: {
+    width: width,
+    height: height,
+    resizeMode: 'cover',
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'flex-end',
+  },
+  contentContainer: {
+    padding: 20,
+    paddingBottom: 50,
+    alignItems: 'center',
   },
   text: {
-    fontSize: 18,
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
     textAlign: 'center',
-    marginHorizontal: 20,
     marginBottom: 30,
   },
   button: {
     backgroundColor: '#007AFF',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
+    paddingHorizontal: 40,
+    paddingVertical: 15,
+    borderRadius: 25,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
   },
 });
+
+export default Intro;

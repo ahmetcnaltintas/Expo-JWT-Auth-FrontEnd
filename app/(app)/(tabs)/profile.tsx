@@ -44,7 +44,7 @@ const Profile = () => {
         ].map((item, index) => (
           <View key={index} style={styles.infoItem}>
             <View style={styles.iconContainer}>
-              <Ionicons name={item.icon} size={24} color="#fff" />
+              <Ionicons icon={item.icon} size={24} color="#fff" />
             </View>
             <Text style={styles.infoText}>{item.text}</Text>
           </View>
